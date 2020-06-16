@@ -16,9 +16,14 @@ $ sudo apt install build-essential cmake
 ```
 Run `build.sh` to produce build artifacts in `build/`
 
+### Example
+```
+./build/Driver -experiment mossbauer -dim 3 -index 0 -poi 1 -sigeps 0.4 -design -1.3,0,1.3 -N 100 -M1 100 -M2 100 -useMIS 1 -outfile test.txt
+```
+- `-index 0` means the parameter of interests has index 0
+- `-poi 1` means only one parameter of interest. 
+
 ### Running analysis code
 
-Not compatible with python2.7. Some python packages are required to run analysis code: 
-```
-$ pip3 install numpy matplotlib ipython
-```
+Uses python2.7. Some python packages are required to run analysis code: numpy, matplotlib
+
