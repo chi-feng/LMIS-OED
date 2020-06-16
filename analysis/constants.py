@@ -3,71 +3,66 @@ import sys
 
 raw = np.genfromtxt(sys.argv[1])
 data = {}
-data['C1'] = raw[:,0]
-data['C2'] = raw[:,1]
-data['D1'] = raw[:,2]
-data['D2'] = raw[:,3]
-data['D3'] = raw[:,4]
-data['CESS1'] = raw[:,5]
-data['CESS2'] = raw[:,6]
+data["C1"] = raw[:, 0]
+data["C2"] = raw[:, 1]
+data["D1"] = raw[:, 2]
+data["D2"] = raw[:, 3]
+data["D3"] = raw[:, 4]
+data["CESS1"] = raw[:, 5]
+data["CESS2"] = raw[:, 6]
 
 
-labels = ['C1','C2','D1','D2','D3','CESS1','CESS2']
-means = np.mean(raw,axis=0)
-errors = np.std(raw,axis=0)/np.sqrt(np.size(raw,axis=0))
+labels = ["C1", "C2", "D1", "D2", "D3", "CESS1", "CESS2"]
+means = np.mean(raw, axis=0)
+errors = np.std(raw, axis=0) / np.sqrt(np.size(raw, axis=0))
 for i, label in enumerate(labels):
-	if label == 'D3':
-		means[i] = np.var(raw[:,i])
-		errors[i] = np.var(raw[:,i]) * np.sqrt(2.0 / (np.size(raw,axis=0)-1))
-	print '%s = %f +- %0f' % (labels[i], means[i], errors[i])
+    if label == "D3":
+        means[i] = np.var(raw[:, i])
+        errors[i] = np.var(raw[:, i]) * np.sqrt(2.0 / (np.size(raw, axis=0) - 1))
+    print "%s = %f +- %0f" % (labels[i], means[i], errors[i])
 
 from plotting import *
 
-colors = ['#e41a1c', '#377eb8', '#4daf4a', '#984ea3']
+colors = ["#e41a1c", "#377eb8", "#4daf4a", "#984ea3"]
 fig = plt.figure(figsize=(6, 2))
-plt.subplot(1,2,1)
-bins = 10**np.linspace(-3,3,80)
-plt.hist(data['C1'], bins=bins, histtype='step',color=colors[1])
-plt.axvline(x=np.mean(data['C1']),color='k')
-plt.xscale('log')
-plt.xlabel('$C_1$')
-plt.subplot(1,2,2)
-plt.hist(data['C2'], bins=bins, histtype='step',color=colors[2])
-plt.axvline(x=np.mean(data['C2']),color='k')
-plt.xscale('log')
-plt.xlabel('$C_2$')
-plt.savefig('C.pdf', bbox_inches='tight')
+plt.subplot(1, 2, 1)
+bins = 10 ** np.linspace(-3, 3, 80)
+plt.hist(data["C1"], bins=bins, histtype="step", color=colors[1])
+plt.axvline(x=np.mean(data["C1"]), color="k")
+plt.xscale("log")
+plt.xlabel("$C_1$")
+plt.subplot(1, 2, 2)
+plt.hist(data["C2"], bins=bins, histtype="step", color=colors[2])
+plt.axvline(x=np.mean(data["C2"]), color="k")
+plt.xscale("log")
+plt.xlabel("$C_2$")
+plt.savefig("C.pdf", bbox_inches="tight")
 
 
 fig = plt.figure(figsize=(3, 2))
-plt.hist(data['D3']**2-np.mean(data['D3']), np.linspace(-5,20,100), histtype='step',color=colors[1])
-plt.axvline(x=np.var(data['D3']),color='k')
-plt.xlabel('$D_3$')
-plt.savefig('D3.pdf', bbox_inches='tight')
+plt.hist(
+    data["D3"] ** 2 - np.mean(data["D3"]),
+    np.linspace(-5, 20, 100),
+    histtype="step",
+    color=colors[1],
+)
+plt.axvline(x=np.var(data["D3"]), color="k")
+plt.xlabel("$D_3$")
+plt.savefig("D3.pdf", bbox_inches="tight")
 
 
 fig = plt.figure(figsize=(3, 2))
-bins = np.linspace(70000,90000,100)
-plt.hist(data['CESS1'], bins=bins, histtype='step',color=colors[1])
-plt.axvline(x=np.mean(data['CESS1']),color=colors[1])
-plt.hist(data['CESS2'], bins=bins, histtype='step',color=colors[2])
-plt.axvline(x=np.mean(data['CESS2']),color=colors[2])
-plt.xlabel(r'$\text{cESS}$ (max $10^4$)')
-plt.legend(['cond','marg'],loc='upper center',fontsize='small')
-plt.savefig('CESS.pdf', bbox_inches='tight')
+bins = np.linspace(70000, 90000, 100)
+plt.hist(data["CESS1"], bins=bins, histtype="step", color=colors[1])
+plt.axvline(x=np.mean(data["CESS1"]), color=colors[1])
+plt.hist(data["CESS2"], bins=bins, histtype="step", color=colors[2])
+plt.axvline(x=np.mean(data["CESS2"]), color=colors[2])
+plt.xlabel(r"$\text{cESS}$ (max $10^4$)")
+plt.legend(["cond", "marg"], loc="upper center", fontsize="small")
+plt.savefig("CESS.pdf", bbox_inches="tight")
 
 
-
-
-
-
-
-
-
-
-
-
-'''
+"""
 fig = plt.figure()
 fig.set_size_inches(3.5, 2.5)
 
@@ -135,4 +130,4 @@ ax.set_xticklabels(tick_names, rotation=0, fontsize=10)
 ax.set_xticks([1.5 + 3 * i for i in xrange(len(plot_algs))])
 
 save_fig('analysis/plots/custom_ess_%s.pdf' % suffix);
-'''
+"""
