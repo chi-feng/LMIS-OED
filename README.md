@@ -4,11 +4,11 @@ https://arxiv.org/abs/1903.11187
 
 ## Build and Install
 ```
-git clone --recurse-submodules https://github.com/chi-feng/LMIS-OED.git
+git clone --recursive https://github.com/chi-feng/LMIS-OED.git
 ```
-Eigen sources are included as submodule. If you cloned the repository without the submodules, you can get them with the command
+Eigen sources are included as a submodule. If you cloned the repository without the submodules, you can get them with the command
 ```
-$ git submodule update --init --recurse
+$ git submodule update --init
 ```
 Prerequisites to build (on Ubuntu/Debian)
 ```
