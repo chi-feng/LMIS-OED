@@ -1,10 +1,12 @@
+<a href="https://github.com/chi-feng/LMIS-OED/actions?query=workflow%3A%22C%2B%2B+build+and+tests%22">![C++ build and tests](https://github.com/chi-feng/LMIS-OED/workflows/C++%20build%20and%20tests/badge.svg)</a>
+
 # A layered multiple importance sampling scheme for focused optimal Bayesian experimental design
 
 https://arxiv.org/abs/1903.11187
 
 ## Build and Install
 ```
-git clone --recursive https://github.com/chi-feng/LMIS-OED.git
+$ git clone --recursive https://github.com/chi-feng/LMIS-OED.git
 ```
 Eigen sources are included as a submodule. If you cloned the repository without the submodules, you can get them with the command
 ```
