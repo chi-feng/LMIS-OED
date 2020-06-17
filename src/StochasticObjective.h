@@ -7,7 +7,7 @@
 class StochasticObjective {
   public:
 
-    int  dim;
+    int dim;
 
     bool needInitialize;
 

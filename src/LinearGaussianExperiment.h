@@ -9,39 +9,41 @@
 
 class LinearGaussianExperiment : public Experiment
 {
-public:
-  std::shared_ptr<MultivariateNormal> priorDist;
-  std::shared_ptr<MultivariateNormal> noiseDist;
+  public:
 
-public:
-  LinearGaussianExperiment();
+    std::shared_ptr<MultivariateNormal> priorDist;
+    std::shared_ptr<MultivariateNormal> noiseDist;
 
-  virtual Eigen::MatrixXd GetMatrix(const Eigen::VectorXd &design);
+  public:
 
-  virtual Eigen::VectorXd Evaluate(const Eigen::VectorXd &input, const Eigen::VectorXd &design) override;
+    LinearGaussianExperiment();
 
-  Eigen::VectorXd GetNoiseSample() override;
+    virtual Eigen::MatrixXd GetMatrix(const Eigen::VectorXd& design);
 
-  double LogLikelihood(const Eigen::VectorXd &observation, const Eigen::VectorXd &input, const Eigen::VectorXd &design) override;
+    virtual Eigen::VectorXd Evaluate(const Eigen::VectorXd& input, const Eigen::VectorXd& design) override;
 
-  double LogLikelihoodCached(const Eigen::VectorXd &observation,
-                             const Eigen::VectorXd &input,
-                             const Eigen::VectorXd &cachedOutput,
-                             const Eigen::VectorXd &design) override;
+    Eigen::VectorXd         GetNoiseSample() override;
 
-  Eigen::VectorXd GetPriorSample() override;
+    double                  LogLikelihood(const Eigen::VectorXd& observation, const Eigen::VectorXd& input, const Eigen::VectorXd& design) override;
 
-  Eigen::VectorXd GetCondPriorSample(const Eigen::VectorXd &input) override;
+    double                  LogLikelihoodCached(const Eigen::VectorXd& observation,
+                                                const Eigen::VectorXd& input,
+                                                const Eigen::VectorXd& cachedOutput,
+                                                const Eigen::VectorXd& design) override;
 
-  double PriorLogDensity(const Eigen::VectorXd &input) override;
+    Eigen::VectorXd GetPriorSample() override;
 
-  double CondPriorLogDensity(const Eigen::VectorXd &input) override;
+    Eigen::VectorXd GetCondPriorSample(const Eigen::VectorXd& input) override;
 
-  Eigen::VectorXd PosteriorMean(const Eigen::VectorXd &output, const Eigen::VectorXd &design) override;
+    double          PriorLogDensity(const Eigen::VectorXd& input) override;
 
-  Eigen::MatrixXd PosteriorCovariance(const Eigen::VectorXd &output, const Eigen::VectorXd &design) override;
+    double          CondPriorLogDensity(const Eigen::VectorXd& input) override;
 
-  double Evidence(const Eigen::VectorXd &observation, const Eigen::VectorXd &design);
+    Eigen::VectorXd PosteriorMean(const Eigen::VectorXd& output, const Eigen::VectorXd& design) override;
+
+    Eigen::MatrixXd PosteriorCovariance(const Eigen::VectorXd& output, const Eigen::VectorXd& design) override;
+
+    double          Evidence(const Eigen::VectorXd& observation, const Eigen::VectorXd& design);
 };
 
 #endif // ifndef LinearGaussianExperiment_h

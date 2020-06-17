@@ -46,7 +46,9 @@ VectorXd Model::GetLambda(const VectorXd& alpha, const VectorXd& xi)
 pair<double, double> Model::GetMoments(const int i, const VectorXd& alpha)
 {
   if (useNISP) {
-    auto f_i = [&](const VectorXd& xi) { return this->Evaluate(this->x.row(i), alpha, xi); };
+    auto f_i = [&](const VectorXd& xi) {
+                 return this->Evaluate(this->x.row(i), alpha, xi);
+               };
     pce[i]->SetFunction(f_i);
     return pce[i]->GetMoments();
   } else {

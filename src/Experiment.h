@@ -13,46 +13,48 @@ class Experiment
 {
   friend class ExpectedInformationEstimator;
 
-public:
-  std::string name;
+  public:
 
-  int inputDim, outputDim;
+    std::string name;
 
-  int designDim;
+    int inputDim, outputDim;
 
-  int parametersOfInterest, nuisanceParameters;
+    int designDim;
 
-  bool hasPosterior;
+    int parametersOfInterest, nuisanceParameters;
 
-public:
-  virtual VectorXd Evaluate(const VectorXd &input, const VectorXd &design) = 0;
+    bool hasPosterior;
 
-  virtual VectorXd GetNoiseSample() = 0;
+  public:
 
-  virtual double LogLikelihood(const VectorXd &output, const VectorXd &input, const VectorXd &design) = 0;
+    virtual VectorXd Evaluate(const VectorXd& input, const VectorXd& design) = 0;
 
-  virtual double LogLikelihoodCached(const VectorXd &output, const VectorXd &input, const VectorXd &cachedOutput,
-                                     const VectorXd &design) = 0;
+    virtual VectorXd GetNoiseSample() = 0;
 
-  virtual VectorXd GetPriorSample() = 0;
+    virtual double   LogLikelihood(const VectorXd& output, const VectorXd& input, const VectorXd& design) = 0;
 
-  virtual double PriorLogDensity(const VectorXd &input) = 0;
+    virtual double   LogLikelihoodCached(const VectorXd& output, const VectorXd& input, const VectorXd& cachedOutput,
+                                         const VectorXd& design) = 0;
 
-  virtual VectorXd GetCondPriorSample(const VectorXd &input) = 0;
+    virtual VectorXd GetPriorSample() = 0;
 
-  virtual double CondPriorLogDensity(const VectorXd &nuisance) = 0;
+    virtual double   PriorLogDensity(const VectorXd& input) = 0;
 
-  virtual VectorXd PosteriorMean(const VectorXd &output, const VectorXd &design) = 0;
+    virtual VectorXd GetCondPriorSample(const VectorXd& input) = 0;
 
-  virtual MatrixXd PosteriorCovariance(const VectorXd &output, const VectorXd &design) = 0;
+    virtual double   CondPriorLogDensity(const VectorXd& nuisance) = 0;
 
-  virtual VectorXd GetPriorMean() = 0;
+    virtual VectorXd PosteriorMean(const VectorXd& output, const VectorXd& design) = 0;
 
-  inline int GetInputDim() { return inputDim; }
+    virtual MatrixXd PosteriorCovariance(const VectorXd& output, const VectorXd& design) = 0;
 
-  Experiment() : hasPosterior(false) {}
+    virtual VectorXd GetPriorMean() = 0;
 
-  virtual ~Experiment() = default;
+    inline int       GetInputDim() { return inputDim; }
+
+    Experiment() : hasPosterior(false) { }
+
+    virtual ~Experiment() = default;
 };
 
 #endif // ifndef _Experiment_h

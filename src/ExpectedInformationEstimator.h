@@ -22,194 +22,199 @@ using std::vector;
 
 class ExpectedInformationEstimator
 {
-private:
-  /// \brief Shared pointer to an instance of an experiment
-  shared_ptr<Experiment> experiment;
+  private:
 
-  /// \brief Flag indicating whether the member data structures have been allocated
-  bool allocated;
+    /// \brief Shared pointer to an instance of an experiment
+    shared_ptr<Experiment> experiment;
 
-  /// \brief Flag indicating whether the member data structures relating to multiple importance sampling have been
-  // allocated
-  bool allocatedMIS;
+    /// \brief Flag indicating whether the member data structures have been allocated
+    bool allocated;
 
-public:
-  /// \brief Number of outer Monte Carlo Samples for estimating the expected information gain
-  int N;
+    /// \brief Flag indicating whether the member data structures relating to multiple importance sampling have been
+    // allocated
+    bool allocatedMIS;
 
-  /// \brief Number of Monte Carlo samples for estimating the \f$N\f$ marginal likelihoods \f$p(y^{(i)}|d)\f$
-  int M1;
+  public:
 
-  /// \brief Number of Monte Carlo samples for estimating the \f$N\f$ conditional likelihoods
-  // \f$p(y^{(i)}|\theta^{(i)},d)\f$
-  int M2;
+    /// \brief Number of outer Monte Carlo Samples for estimating the expected information gain
+    int N;
 
-  /// \brief String indicating the type of distribution used for importance sampling, e.g. "MVT", "MVN", "EXACT" (when
-  // available)
-  string biasingDistributionType;
+    /// \brief Number of Monte Carlo samples for estimating the \f$N\f$ marginal likelihoods \f$p(y^{(i)}|d)\f$
+    int M1;
 
-  /// \brief Degrees of freedom for multivariate-t biasing distributions
-  double dof;
+    /// \brief Number of Monte Carlo samples for estimating the \f$N\f$ conditional likelihoods
+    // \f$p(y^{(i)}|\theta^{(i)},d)\f$
+    int M2;
 
-  /// \brief Size of nugget added to diagonal of estimated posterior covariances
-  double nugget;
+    /// \brief String indicating the type of distribution used for importance sampling, e.g. "MVT", "MVN", "EXACT" (when
+    // available)
+    string biasingDistributionType;
 
-  /// \brief Maxmimum number of components in mixture distribution
-  int maxComponents;
+    /// \brief Degrees of freedom for multivariate-t biasing distributions
+    double dof;
 
-  /// \brief Minimum number of components in mixture distribution
-  int minComponents;
+    /// \brief Size of nugget added to diagonal of estimated posterior covariances
+    double nugget;
 
-  /// \brief Flag to toggle importance sampling (default = false)
-  bool useIS;
+    /// \brief Maxmimum number of components in mixture distribution
+    int maxComponents;
 
-  /// \brief Flag to toggle multiple importance sampling (default = false)
-  bool useMIS;
+    /// \brief Minimum number of components in mixture distribution
+    int minComponents;
 
-  bool debugCondLikelihood;
+    /// \brief Flag to toggle importance sampling (default = false)
+    bool useIS;
 
-  bool useMarginal;
+    /// \brief Flag to toggle multiple importance sampling (default = false)
+    bool useMIS;
 
-  /// \brief Flag to toggle sorting of prior samples by prior likelihood (default = false)
-  bool useSortHeuristic;
+    bool debugCondLikelihood;
 
-  bool useReverseLikelihood;
+    bool useMarginal;
 
-  bool useMinSampleDistance;
+    /// \brief Flag to toggle sorting of prior samples by prior likelihood (default = false)
+    bool useSortHeuristic;
 
-  /// \brief Flag to reuse prior samples between evaluations (default = false)
-  bool reusePriorSamples;
+    bool useReverseLikelihood;
 
-  /// \brief Flag to use exact posterior if provided (default = false)
-  bool useExactPosterior;
+    bool useMinSampleDistance;
 
-  /// \brief Flag to use bias correction
-  bool useBiasCorrection;
+    /// \brief Flag to reuse prior samples between evaluations (default = false)
+    bool reusePriorSamples;
 
-  /// \brief Flag to toggle displaying a progress bar (default = false)
-  bool showProgressBar;
+    /// \brief Flag to use exact posterior if provided (default = false)
+    bool useExactPosterior;
 
-  bool verbose;
+    /// \brief Flag to use bias correction
+    bool useBiasCorrection;
 
-private:
-  /// \brief Execution time in milliseconds
-  double executionTime;
+    /// \brief Flag to toggle displaying a progress bar (default = false)
+    bool showProgressBar;
 
-  /// \brief \f$N\times M_1\f$ matrix of log integrands for the marginal likelihood estimator where the \f$(i, j)\f$
-  // element is the log of the \f$j\f$th integrand for estimating \f$p(y^{(i)}|d)\f$
-  MatrixXd logf_ML;
+    bool verbose;
 
-  /// \brief \f$N\times M_1\f$ matrix of log importance weights for the marginal likelihood estimator where the \f$(i,
-  // j)\f$ element is the log of the \f$j\f$th importance weight for estimating \f$p(y^{(i)}|d)\f$
-  MatrixXd logw_ML;
+  private:
 
-  /// \brief \f$N\times M_2\f$ matrix of log integrands for the conditional likelihood estimator where the \f$(i, j)\f$
-  // element is the log of the \f$j\f$th integrand for estimating \f$p(y^{(i)}|\theta^{(i)},d)\f$
-  MatrixXd logf_CL;
+    /// \brief Execution time in milliseconds
+    double executionTime;
 
-  /// \brief \f$N\times M_2\f$ matrix of log importance weights for the conditional likelihood estimator where the
-  // \f$(i, j)\f$ element is the log of the \f$j\f$th importance weight for estimating \f$p(y^{(i)}|\theta^{(i)},d)\f$
-  MatrixXd logw_CL;
+    /// \brief \f$N\times M_1\f$ matrix of log integrands for the marginal likelihood estimator where the \f$(i, j)\f$
+    // element is the log of the \f$j\f$th integrand for estimating \f$p(y^{(i)}|d)\f$
+    MatrixXd logf_ML;
 
-  /// \brief Length \f$N\f$ vector of all \f$N\f$ estimates of the log marginal likelihood \f$\log p(y^{(i)}|d)\f$
-  VectorXd logML;
+    /// \brief \f$N\times M_1\f$ matrix of log importance weights for the marginal likelihood estimator where the \f$(i,
+    // j)\f$ element is the log of the \f$j\f$th importance weight for estimating \f$p(y^{(i)}|d)\f$
+    MatrixXd logw_ML;
 
-  /// \brief Length \f$N\f$ vector of all \f$N\f$ estimates of the log marginal likelihood \f$\log
-  // p(y^{(i)}|\theta^{(i)},d)\f$
-  VectorXd logCL;
+    /// \brief \f$N\times M_2\f$ matrix of log integrands for the conditional likelihood estimator where the \f$(i, j)\f$
+    // element is the log of the \f$j\f$th integrand for estimating \f$p(y^{(i)}|\theta^{(i)},d)\f$
+    MatrixXd logf_CL;
 
-  /// \brief Length \f$N\f$ vector of all \f$N\f$ estimates of the log marginal likelihood \f$\log p(y^{(i)}|d)\f$
-  VectorXd logMLexact;
+    /// \brief \f$N\times M_2\f$ matrix of log importance weights for the conditional likelihood estimator where the
+    // \f$(i, j)\f$ element is the log of the \f$j\f$th importance weight for estimating \f$p(y^{(i)}|\theta^{(i)},d)\f$
+    MatrixXd logw_CL;
 
-  /// \brief Length \f$N\f$ vector of all \f$N\f$ estimates of the log marginal likelihood \f$\log
-  // p(y^{(i)}|\theta^{(i)},d)\f$
-  VectorXd logCLexact;
+    /// \brief Length \f$N\f$ vector of all \f$N\f$ estimates of the log marginal likelihood \f$\log p(y^{(i)}|d)\f$
+    VectorXd logML;
 
-  /// \brief \f$N\times(n_\theta+n_\eta)\f$ matrix where each row is a sample from the prior distribution
-  MatrixXd X_prior;
+    /// \brief Length \f$N\f$ vector of all \f$N\f$ estimates of the log marginal likelihood \f$\log
+    // p(y^{(i)}|\theta^{(i)},d)\f$
+    VectorXd logCL;
 
-  /// \brief \f$N\times n_y\f$ matrix where the \f$i\f$th row is the model evaluated at the \f$i\f$th sample from the
-  // prior distribution
-  MatrixXd G_prior;
+    /// \brief Length \f$N\f$ vector of all \f$N\f$ estimates of the log marginal likelihood \f$\log p(y^{(i)}|d)\f$
+    VectorXd logMLexact;
 
-  /// \brief \f$N\times n_y\f$ matrix where the \f$i\f$th row is the model evaluated at the \f$i\f$th sample from the
-  // prior distribution with observation error
-  MatrixXd Y_prior;
+    /// \brief Length \f$N\f$ vector of all \f$N\f$ estimates of the log marginal likelihood \f$\log
+    // p(y^{(i)}|\theta^{(i)},d)\f$
+    VectorXd logCLexact;
 
-  /// \brief Collection of \f$N\f$ \f$M_1\times (n_\theta+n_\eta)\f$ matrices where the \f$i\f$th matrix contains the
-  // sample set \f$\mathcal{X}_\text{ML}^{(i)}\sim q_\text{ML}^{(i)}\f$
-  vector<MatrixXd> X_ML;
+    /// \brief \f$N\times(n_\theta+n_\eta)\f$ matrix where each row is a sample from the prior distribution
+    MatrixXd X_prior;
 
-  /// \brief Collection of \f$N\f$ \f$M_1\times n_y\f$ matrices where the \f$i\f$th matrix contains the model evaluated
-  // at the samples in \f$\mathcal{X}_\text{ML}^{(i)}\f$
-  vector<MatrixXd> G_ML;
+    /// \brief \f$N\times n_y\f$ matrix where the \f$i\f$th row is the model evaluated at the \f$i\f$th sample from the
+    // prior distribution
+    MatrixXd G_prior;
 
-  /// \brief Collection of \f$N\f$ \f$M_2\times (n_\theta+n_\eta)\f$ matrices where the \f$i\f$th matrix contains the
-  // sample set \f$\mathcal{X}_\text{ML}^{(i)}\sim q_\text{CL}^{(i)}\f$
-  vector<MatrixXd> X_CL;
+    /// \brief \f$N\times n_y\f$ matrix where the \f$i\f$th row is the model evaluated at the \f$i\f$th sample from the
+    // prior distribution with observation error
+    MatrixXd Y_prior;
 
-  /// \brief Collection of \f$N\f$ \f$M_2\times n_y\f$ matrices where the \f$i\f$th matrix contains the model evaluated
-  // at the samples in \f$\mathcal{X}_\text{CL}^{(i)}\f$
-  vector<MatrixXd> G_CL;
+    /// \brief Collection of \f$N\f$ \f$M_1\times (n_\theta+n_\eta)\f$ matrices where the \f$i\f$th matrix contains the
+    // sample set \f$\mathcal{X}_\text{ML}^{(i)}\sim q_\text{ML}^{(i)}\f$
+    vector<MatrixXd> X_ML;
 
-  /// \brief \f$N\times M_1\f$ matrix where element \f$(i,j)\f$ is the log prior density of the \f$j\f$th sample of
-  // \f$\mathcal{X}_\text{ML}^{(i)}\f$
-  MatrixXd ML_priorLogDensities;
+    /// \brief Collection of \f$N\f$ \f$M_1\times n_y\f$ matrices where the \f$i\f$th matrix contains the model evaluated
+    // at the samples in \f$\mathcal{X}_\text{ML}^{(i)}\f$
+    vector<MatrixXd> G_ML;
 
-  /// \brief \f$N\times M_1\f$ matrix where element \f$(i,j)\f$ is the log density \f$q_\text{ML}^{(i)}\f$ evaluated at
-  // the \f$j\f$th sample of \f$\mathcal{X}_\text{ML}^{(i)}\f$
-  MatrixXd ML_biasLogDensities;
+    /// \brief Collection of \f$N\f$ \f$M_2\times (n_\theta+n_\eta)\f$ matrices where the \f$i\f$th matrix contains the
+    // sample set \f$\mathcal{X}_\text{ML}^{(i)}\sim q_\text{CL}^{(i)}\f$
+    vector<MatrixXd> X_CL;
 
-  /// \brief Length \f$N\f$ vector of log prior densities at the \f$i\f$th sample of \f$\mathcal{X}_\text{prior}\f$
-  VectorXd priorLogDensities;
+    /// \brief Collection of \f$N\f$ \f$M_2\times n_y\f$ matrices where the \f$i\f$th matrix contains the model evaluated
+    // at the samples in \f$\mathcal{X}_\text{CL}^{(i)}\f$
+    vector<MatrixXd> G_CL;
 
-  /// \brief \f$N\times N\f$ matrix of log likelihoods \f$p(y^{(i)}|\theta^{(j)},\eta^{(j)},d)\f$
-  MatrixXd priorLogLikelihoods;
+    /// \brief \f$N\times M_1\f$ matrix where element \f$(i,j)\f$ is the log prior density of the \f$j\f$th sample of
+    // \f$\mathcal{X}_\text{ML}^{(i)}\f$
+    MatrixXd ML_priorLogDensities;
 
-  vector<VectorXd> postMean;
-  vector<MatrixXd> postCov;
+    /// \brief \f$N\times M_1\f$ matrix where element \f$(i,j)\f$ is the log density \f$q_\text{ML}^{(i)}\f$ evaluated at
+    // the \f$j\f$th sample of \f$\mathcal{X}_\text{ML}^{(i)}\f$
+    MatrixXd ML_biasLogDensities;
 
-  vector<VectorXd> condMean;
-  vector<MatrixXd> condCov;
+    /// \brief Length \f$N\f$ vector of log prior densities at the \f$i\f$th sample of \f$\mathcal{X}_\text{prior}\f$
+    VectorXd priorLogDensities;
 
-  /// \brief Collection of \f$N\f$ biasing distributions used to estimate the marginal likelihoods
-  vector<shared_ptr<Distribution>> q_ML;
+    /// \brief \f$N\times N\f$ matrix of log likelihoods \f$p(y^{(i)}|\theta^{(j)},\eta^{(j)},d)\f$
+    MatrixXd priorLogLikelihoods;
 
-  /// \brief Collection of \f$N\f$ biasing distributions used to estimate the conditional likelihoods
-  vector<shared_ptr<Distribution>> q_CL;
+    vector<VectorXd> postMean;
+    vector<MatrixXd> postCov;
 
-  /// \brief Map of tuples (a, b) that correspond to a vector with element i \f$\to\f$
-  // \f$q_\text{ML}^{(a)}(\mathcal{X}_\text{ML}^{(b,i)}\f$
-  map<tuple<int, int>, VectorXd> ML_cache;
+    vector<VectorXd> condMean;
+    vector<MatrixXd> condCov;
 
-  /// \brief \f$N\times N\f$ matrix of \f$q_\text{ML}^{(i)}(\mathcal{X}_\text{prior}^{(j)})\f$
-  map<int, VectorXd> ML_priorCache;
+    /// \brief Collection of \f$N\f$ biasing distributions used to estimate the marginal likelihoods
+    vector<shared_ptr<Distribution>> q_ML;
 
-  /// \brief Mixture indices for every iteration
-  vector<vector<int>> mixtureIndices;
+    /// \brief Collection of \f$N\f$ biasing distributions used to estimate the conditional likelihoods
+    vector<shared_ptr<Distribution>> q_CL;
 
-  /// \brief Effective sample size when estimating posterior moments for each iteration
-  VectorXd ESS;
+    /// \brief Map of tuples (a, b) that correspond to a vector with element i \f$\to\f$
+    // \f$q_\text{ML}^{(a)}(\mathcal{X}_\text{ML}^{(b,i)}\f$
+    map<tuple<int, int>, VectorXd> ML_cache;
 
-public:
-  ExpectedInformationEstimator(const shared_ptr<Experiment> experiment);
-  void PrintInfo(std::ostream &stream);
-  void WriteToFile(const std::string &prefix, const VectorXd &design);
-  double Evaluate(const VectorXd &design);
-  double GetExecutionTime();
+    /// \brief \f$N\times N\f$ matrix of \f$q_\text{ML}^{(i)}(\mathcal{X}_\text{prior}^{(j)})\f$
+    map<int, VectorXd> ML_priorCache;
 
-private:
-  void Allocate();
-  void AllocateMIS();
-  void SortPriorSamples();
-  void EvaluatePriorSamples(const VectorXd &design);
-  double EvaluateBiasCorrectedEIG();
-  double EvaluateNoIS(const VectorXd &design);
-  double EvaluateIS(const VectorXd &design);
-  double EvaluateMIS(const VectorXd &design);
+    /// \brief Mixture indices for every iteration
+    vector<vector<int>> mixtureIndices;
+
+    /// \brief Effective sample size when estimating posterior moments for each iteration
+    VectorXd ESS;
+
+  public:
+
+    ExpectedInformationEstimator(const shared_ptr<Experiment> experiment);
+    void   PrintInfo(std::ostream& stream);
+    void   WriteToFile(const std::string& prefix, const VectorXd& design);
+    double Evaluate(const VectorXd& design);
+    double GetExecutionTime();
+
+  private:
+
+    void   Allocate();
+    void   AllocateMIS();
+    void   SortPriorSamples();
+    void   EvaluatePriorSamples(const VectorXd& design);
+    double EvaluateBiasCorrectedEIG();
+    double EvaluateNoIS(const VectorXd& design);
+    double EvaluateIS(const VectorXd& design);
+    double EvaluateMIS(const VectorXd& design);
 };
 
-inline std::ostream &operator<<(std::ostream &os, std::shared_ptr<ExpectedInformationEstimator> estimator)
+inline std::ostream& operator<<(std::ostream& os, std::shared_ptr<ExpectedInformationEstimator> estimator)
 {
   os << "-N " << estimator->N << std::endl;
   os << "-M1 " << estimator->M1 << std::endl;

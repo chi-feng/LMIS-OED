@@ -6,19 +6,21 @@
 
 class Distribution
 {
-protected:
-  int dim;
+  protected:
 
-public:
-  virtual Eigen::VectorXd GetSample() = 0;
-  virtual Eigen::VectorXd GetSamples(const int n) = 0;
-  virtual double LogDensity(const Eigen::VectorXd &sample) = 0;
-  inline double Density(const Eigen::VectorXd &sample)
-  {
-    return std::exp(LogDensity(sample));
-  }
+    int dim;
 
-  inline int GetDimension() { return dim; }
+  public:
+
+    virtual Eigen::VectorXd GetSample()                               = 0;
+    virtual Eigen::VectorXd GetSamples(const int n)                   = 0;
+    virtual double          LogDensity(const Eigen::VectorXd& sample) = 0;
+    inline double           Density(const Eigen::VectorXd& sample)
+    {
+      return std::exp(LogDensity(sample));
+    }
+
+    inline int GetDimension() { return dim; }
 };
 
 #endif // ifndef Distribution_h

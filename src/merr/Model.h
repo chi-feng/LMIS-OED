@@ -16,21 +16,21 @@ class Model {
 
     enum class LikelihoodType { ABC, Full, Gauss, Marginal, GaussMarginal };
 
-    string     name;
-    MatrixXd   x;                        /// matrix where each row is x_i
-    VectorXd   y;                        /// vector where each entry is y_i
+    string name;
+    MatrixXd x;                          /// matrix where each row is x_i
+    VectorXd y;                          /// vector where each entry is y_i
     int N;                               /// number of data points
     int dim;                             /// dimension of lambda
-    double     datanoise;                /// stdev of data noise when not inferring sigma
-    bool       inferNoise;               /// infer data noise assume alpha.tail(1) is log(sigma)
+    double datanoise;                    /// stdev of data noise when not inferring sigma
+    bool inferNoise;                     /// infer data noise assume alpha.tail(1) is log(sigma)
     LikelihoodType likelihood;           /// type of likelihood, e.g. "full" or "gaussmarg"
-    int        nsamps;                   /// # of MC samples for estimating moments and likelihood
-    bool       initialized;              /// flag to initialize shared PCE, etc.
-    bool       useNISP;                  /// use NISP to find model moments, otherwise use MC
-    int        pcdim;                    /// maximum order of PC expansion when using NISP
+    int nsamps;                          /// # of MC samples for estimating moments and likelihood
+    bool initialized;                    /// flag to initialize shared PCE, etc.
+    bool useNISP;                        /// use NISP to find model moments, otherwise use MC
+    int pcdim;                           /// maximum order of PC expansion when using NISP
     vector<shared_ptr<PCExpansion>> pce; /// PCE expansions at each x_i
-    double     abceps;                   /// ABC epsilon
-    double     abcgamma;                 /// ABC gamma
+    double abceps;                       /// ABC epsilon
+    double abcgamma;                     /// ABC gamma
 
     virtual void                 SetData(const MatrixXd& x, const MatrixXd& y);
     virtual VectorXd             GetLambda(const VectorXd& alpha, const VectorXd& xi);

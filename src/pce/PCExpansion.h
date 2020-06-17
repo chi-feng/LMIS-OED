@@ -28,7 +28,7 @@ class PCExpansion {
     std::vector<GermType> germs;             /// Germ types
     std::shared_ptr<MultiindexSet> indexSet; /// Multiindex set
     Eigen::VectorXd coeffs;                  /// PCE coefficients
-    bool   hasCoefficients;                  /// Flag indicating need to recompute coefficients
+    bool hasCoefficients;                    /// Flag indicating need to recompute coefficients
 
     /// Precomputed univariate quadrature rules indexed by [dim][order]
     std::vector<std::vector<std::shared_ptr<Quadrature1D>>> univarQuads;

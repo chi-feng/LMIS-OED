@@ -146,13 +146,13 @@ int RunTests(int argc, char **argv)
   }
   cout << "mse " << (mse / 1000) << endl;
 
-  int  dim            = 2;
+  int  dim = 2;
   MatrixXd covariance = MatrixXd::Identity(dim, dim) * 0.2;
-  auto mvn1           = make_shared<MultivariateNormal>(VectorXd::Ones(dim), covariance);
-  auto mvn2           = make_shared<MultivariateNormal>(VectorXd::Zero(dim), covariance);
-  auto logdens        = [&](const VectorXd& sample) {
-                          return log(exp(mvn1->LogDensity(sample)) + exp(mvn2->LogDensity(sample)));
-                        };
+  auto mvn1 = make_shared<MultivariateNormal>(VectorXd::Ones(dim), covariance);
+  auto mvn2 = make_shared<MultivariateNormal>(VectorXd::Zero(dim), covariance);
+  auto logdens = [&](const VectorXd& sample) {
+                   return log(exp(mvn1->LogDensity(sample)) + exp(mvn2->LogDensity(sample)));
+                 };
   auto mcmc = make_shared<MCMC>(logdens, dim);
   mcmc->Run(10000);
   WriteEigenAsciiFile("test.chain", mcmc->GetChain());
@@ -161,4 +161,3 @@ int RunTests(int argc, char **argv)
 
   return 0;
 }
-

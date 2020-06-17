@@ -19,7 +19,7 @@ class StochasticOptimizer {
     shared_ptr<StochasticObjective> objective;
 
     /// SPSA parameters
-    double   alpha, gamma, A, a0, c0;
+    double alpha, gamma, A, a0, c0;
 
     /// A dim x 2 matrix where the first and second column are the minimum and maximum box constraint
     MatrixXd boxConstraints;
@@ -28,7 +28,7 @@ class StochasticOptimizer {
     vector<VectorXd> trajectory;
 
     /// A row-wise collection of expected utility at each iteration
-    vector<double>   utility;
+    vector<double> utility;
 
     /// Dimension of the design vector
     int dim;

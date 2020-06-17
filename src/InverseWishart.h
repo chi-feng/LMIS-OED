@@ -17,12 +17,12 @@ class InverseWishart
 
     inline void SetSinv(const Eigen::MatrixXd& Sinv) {
       this->dim = Sinv.rows();
-      this->S = Sinv.inverse();
+      this->S   = Sinv.inverse();
       double lgamma_d = 0.25 * dim * (dim - 1) * log(M_PI);
       for (int i = 1; i <= d; ++i)
         lgamma_d += tgamma((dof + 1 - i) / 2);
       this->logZ = dof * log(S.llt().matrixL().diagonal().array()).sum();
-      logZ -= (dof * dim / 2) * log(2.0) - lgamma_d;
+      logZ      -= (dof * dim / 2) * log(2.0) - lgamma_d;
     }
 
     InverseWishart(const Eigen::MatrixXd& Sinv, const double dof) {
