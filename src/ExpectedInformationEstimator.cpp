@@ -3,6 +3,9 @@
 
 #include <cstdio>
 
+#include <math.h>
+#include <nlopt.h>
+
 #include "Distribution.h"
 #include "MultivariateNormal.h"
 #include "MultivariateT.h"

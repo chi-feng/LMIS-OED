@@ -2,3 +2,6 @@
 	path = extern/eigen
 	url = http://gitlab.com/libeigen/eigen.git
 	branch = master
+[submodule "extern/nlopt"]
+	path = extern/nlopt
+	url = git://github.com/stevengj/nlopt
