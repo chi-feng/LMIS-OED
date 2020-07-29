@@ -21,6 +21,14 @@ jobs:
     - name: Update submodules
       run: |
         git submodule update --init --recursive
+    - name: Build nlopt
+      run: |
+        cd extern/nlopt
+        mkdir -p build
+        cd build
+        cmake ..
+        make
+        sudo make install
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v1
       with:
